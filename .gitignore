@@ -4,3 +4,4 @@
 .terraform
 inventory.yml
 roles*
+vars.sh
