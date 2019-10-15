@@ -67,4 +67,15 @@ resource "hcloud_server" "host" {
   ssh_keys = [
     "${var.ssh_key}",
   ]
+  provisioner "remote-exec" {
+    inline = [
+      "dnf install -y python3 python3-libselinux"
+    ]
+    connection {
+      host = "${self.ipv4_address}"
+      type = "ssh"
+      user = "${var.remote_user}"
+      private_key = "${file("${var.ssh_key_private}")}"
+    }
+  }
 }
