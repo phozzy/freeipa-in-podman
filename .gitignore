@@ -1,0 +1,6 @@
+**.retry
+**.tfstate*
+**.tfvars*
+.terraform
+inventory.yml
+roles*
