@@ -60,6 +60,10 @@ data "hcloud_floating_ip" "fip" {
   for_each = var.server
   with_selector = "host==${each.key}"
 }
+data "hcloud_volume" "vol" {
+  for_each = var.server
+  with_selector = "host==${each.key}"
+}
 
 # Create resources
 resource "hcloud_server" "host" {
@@ -90,5 +94,11 @@ resource "hcloud_server" "host" {
 resource "hcloud_floating_ip_assignment" "fip_ass" {
   for_each = var.server
   floating_ip_id = "${data.hcloud_floating_ip.fip[each.key].id}"
+  server_id = "${hcloud_server.host[each.key].id}"
+}
+# Attach volume
+resource "hcloud_volume_attachment" "vol_att" {
+  for_each = var.server
+  volume_id = "${data.hcloud_volume.vol[each.key].id}"
   server_id = "${hcloud_server.host[each.key].id}"
 }
