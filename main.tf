@@ -55,6 +55,12 @@ provider "hcloud" {
   token = "${var.hcloud_token}"
 }
 
+# Get data from Hetzner Cloud
+data "hcloud_floating_ip" "fip" {
+  for_each = var.server
+  with_selector = "host==${each.key}"
+}
+
 # Create resources
 resource "hcloud_server" "host" {
   for_each = var.server
@@ -78,4 +84,11 @@ resource "hcloud_server" "host" {
       private_key = "${file("${var.ssh_key_private}")}"
     }
   }
+}
+
+# Assign floating IP
+resource "hcloud_floating_ip_assignment" "fip_ass" {
+  for_each = var.server
+  floating_ip_id = "${data.hcloud_floating_ip.fip[each.key].id}"
+  server_id = "${hcloud_server.host[each.key].id}"
 }
