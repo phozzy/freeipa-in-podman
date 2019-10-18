@@ -1,0 +1,31 @@
+---
+ipa:
+  hosts:
+%{ for host in hosts ~}
+    ${host.name}.${domain}:
+      ansible_host: ${host.ipv4_address}
+%{ endfor ~}
+  children:
+    ipamaster:
+      hosts:
+        ${keys(hosts)[0]}.${domain}:
+    ipareplicas:
+      hosts:
+%{ for host in slice(keys(hosts), 1, length(keys(hosts))) ~}
+        ${host}.${domain}:
+%{ endfor ~}
+  vars:
+    ansible_user: ${user}
+    realm: ${upper(domain)}
+    allow_zone_overlap: yes
+    forwarders:
+%{ for forwarder in forwarders ~}
+    - ${forwarder}
+%{ endfor ~}
+    auto_reverse: yes
+    unattended: yes
+    domain: ${domain}
+    setup_kra: yes
+    setup_dns: yes
+    setup_ca: yes
+...

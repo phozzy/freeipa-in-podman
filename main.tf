@@ -17,6 +17,15 @@ variable "hcloud_token" {
   type = string
   description = "Use -var='hcloud_token=...' CLI option"
 }
+variable "hetzner_dns" {
+  type = list(string)
+  description = "Dns servers proposed by Hetzner infrastructure"
+  default = [
+    "213.133.98.98",
+    "213.133.99.99",
+    "213.133.100.100",
+  ]
+}
 variable "server" {
   description = "The mapping of servername to server Data Center"
   type = "map"
@@ -48,6 +57,10 @@ variable "server_image" {
   type = string
   description = "An image being used for a server provisioning."
   default = "centos-8"
+}
+variable "domain" {
+  type = string
+  description = "A domain name for FreeIPA server. Export TF_VAR_domain environment variable to define."
 }
 
 # User Hetzner cloud
@@ -101,4 +114,16 @@ resource "hcloud_volume_attachment" "vol_att" {
   for_each = var.server
   volume_id = "${data.hcloud_volume.vol[each.key].id}"
   server_id = "${hcloud_server.host[each.key].id}"
+}
+
+# Create an inventory file from template
+resource "null_resource" "inventory" {
+  depends_on = [ hcloud_floating_ip_assignment.fip_ass ]
+  # Changes to any instance of the cluster requires re-provisioning
+  triggers = {
+    cluster_instance_ids = "${join(",", [ for k, v in var.server: hcloud_server.host[k].id ])}"
+  }
+  provisioner "local-exec" {
+    command = "echo '${templatefile("inventory.template", { hosts = "${hcloud_server.host}", domain = "${var.domain}", user = "${var.remote_user}", forwarders = "${var.hetzner_dns}" })}' > inventory.yml"
+  }
 }
