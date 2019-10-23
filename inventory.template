@@ -4,6 +4,7 @@ ipa:
 %{ for host in hosts ~}
     ${host.name}.${domain}:
       ansible_host: ${host.ipv4_address}
+      vol_id: ${volumes[host.name].id}
 %{ endfor ~}
   children:
     ipamaster:
