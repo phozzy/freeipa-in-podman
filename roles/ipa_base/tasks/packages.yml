@@ -1,0 +1,8 @@
+- name: install required packages
+  dnf:
+    name: "{{ item }}"
+    state: present
+  loop:
+  - epel-release
+  - python3-pyroute2
+  - podman

@@ -1,0 +1,7 @@
+---
+- hosts: ipa
+  tasks:
+  - name: Prepare the basement for ipa installation
+    include_role:
+      name: ipa_base
+...

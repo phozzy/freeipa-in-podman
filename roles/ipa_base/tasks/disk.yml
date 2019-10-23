@@ -1,0 +1,19 @@
+- name: create mount point
+  file:
+    path: /var/lib/ipadata
+    state: directory
+- name: format partition
+  filesystem:
+    dev: "/dev/disk/by-id/scsi-0HC_Volume_{{ vol_id }}"
+    fstype: xfs
+- name: mount partition
+  mount:
+    path: /var/lib/ipadata
+    src: "/dev/disk/by-id/scsi-0HC_Volume_{{ vol_id }}"
+    fstype: xfs
+    state: mounted
+- name: resize filesystem
+  filesystem:
+    dev: "/dev/disk/by-id/scsi-0HC_Volume_{{ vol_id }}"
+    fstype: xfs
+    resizefs: yes
