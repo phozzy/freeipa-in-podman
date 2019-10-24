@@ -12,8 +12,3 @@
     src: "/dev/disk/by-id/scsi-0HC_Volume_{{ vol_id }}"
     fstype: xfs
     state: mounted
-- name: resize filesystem
-  filesystem:
-    dev: "/dev/disk/by-id/scsi-0HC_Volume_{{ vol_id }}"
-    fstype: xfs
-    resizefs: yes
