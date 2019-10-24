@@ -5,6 +5,7 @@ ipa:
     ${host.name}.${domain}:
       ansible_host: ${host.ipv4_address}
       vol_id: ${volumes[host.name].id}
+      floating_ip: ${fips[host.name].ip_address}
 %{ endfor ~}
   children:
     ipamaster:

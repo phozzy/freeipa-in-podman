@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+from contextlib import suppress
+from pyroute2 import NetNS
+from pyroute2 import IPRoute
+ph_interface = "eth0"
+container_name_space = "ipans"
+container_link = "ipalink"
+floating_ip = "${floating_ip}"
+hetzner_gw = "172.31.1.1"
+ipr = IPRoute()
+base_link = ipr.link_lookup(ifname=ph_interface)[0]
+netns = NetNS(container_name_space)
+with suppress(Exception):
+    ipr.link("add", ifname=container_link, kind="ipvlan", link=base_link, ipvlan_mode=0)
+    ipvl_link = ipr.link_lookup(ifname=container_link)[0]
+    ipr.link("set", index=ipvl_link, net_ns_fd=container_name_space)
+    ipvl_link = netns.link_lookup(ifname=container_link)[0]
+    netns.addr("add", index=ipvl_link, address=floating_ip, mask=32)
+    netns.link("set", index=ipvl_link, state="up")
+    netns.route("add", dst=hetzner_gw, mask=32, oif=ipvl_link, scope="link")
+    netns.route("add", dst="0.0.0.0/0", gateway=hetzner_gw, oif=ipvl_link)
+netns.close()
