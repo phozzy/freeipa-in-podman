@@ -17,6 +17,7 @@ ipa:
 %{ endfor ~}
   vars:
     ansible_user: ${user}
+    ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
     realm: ${upper(domain)}
     allow_zone_overlap: yes
     forwarders:
