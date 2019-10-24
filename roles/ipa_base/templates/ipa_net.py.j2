@@ -5,7 +5,7 @@ from pyroute2 import IPRoute
 ph_interface = "eth0"
 container_name_space = "ipans"
 container_link = "ipalink"
-floating_ip = "${floating_ip}"
+floating_ip = "{{ floating_ip }}"
 hetzner_gw = "172.31.1.1"
 ipr = IPRoute()
 base_link = ipr.link_lookup(ifname=ph_interface)[0]

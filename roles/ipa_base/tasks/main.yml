@@ -4,3 +4,5 @@
   import_tasks: packages.yml
 - name: Configure disk for ipa data
   import_tasks: disk.yml
+- name: Create files to run FreeIPA
+  import_tasks: run_files.yml

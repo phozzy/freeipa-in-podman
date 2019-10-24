@@ -1,0 +1,10 @@
+---
+- name: Create script to create separate network namespace
+  template:
+    src: ipa_net.py.j2
+    dest: /usr/local/sbin/ipa_net.py
+    mode: '755'
+- name: Create systemd unit file to run freeipa
+  template:
+    src: freeipa.service.j2
+    dest: /etc/systemd/system/freeipa.service

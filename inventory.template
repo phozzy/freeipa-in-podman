@@ -6,6 +6,7 @@ ipa:
       ansible_host: ${host.ipv4_address}
       vol_id: ${volumes[host.name].id}
       floating_ip: ${fips[host.name].ip_address}
+      container_hostname: ${fips[host.name].description}
 %{ endfor ~}
   children:
     ipamaster:
@@ -19,6 +20,11 @@ ipa:
   vars:
     ansible_user: ${user}
     ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+    fips:
+%{ for fip in fips ~}
+    - host: ${fip.description}
+      address: ${fip.ip_address}
+%{ endfor ~}
     realm: ${upper(domain)}
     allow_zone_overlap: yes
     forwarders:
