@@ -1,0 +1,7 @@
+---
+- name: Set container_manage_cgroup selinux bolean
+  seboolean:
+    name: container_manage_cgroup
+    state: yes
+    persistent: yes
+...

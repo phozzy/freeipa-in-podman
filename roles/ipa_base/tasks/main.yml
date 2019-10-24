@@ -1,8 +1,11 @@
 ---
 # tasks file for ipa_base
+- name: Set container_manage_cgroup selinux variable
+  import_tasks: selinux.yml
 - name: Install required packages
   import_tasks: packages.yml
 - name: Configure disk for ipa data
   import_tasks: disk.yml
 - name: Create files to run FreeIPA
   import_tasks: run_files.yml
+...
