@@ -1,7 +1,18 @@
 ---
-- name: Set container_manage_cgroup selinux bolean
-  seboolean:
-    name: container_manage_cgroup
-    state: yes
-    persistent: yes
+- name: Set selinux enforcing
+  selinux:
+    policy: targeted
+    state: enforcing
+  register: result
+- name: Mark to relabel
+  file:
+    path: /.autorelabel
+    state: touch
+  when: result.changed
+- name: Reboot to relabel
+  reboot:
+  when: result.changed
+- name: wait for reboot
+  wait_for_connection:
+  when: result.changed
 ...
