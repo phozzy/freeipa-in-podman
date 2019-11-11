@@ -1,7 +1,22 @@
 ---
+# Prepare host for the FreeIPA installation
 - hosts: ipa
   tasks:
   - name: Prepare the basement for ipa installation
     include_role:
       name: ipa_base
+
+# Configure the master
+- hosts: ipamaster
+  tasks:
+  - name: Configure the master server
+    include_role:
+      name: ipa_master
+
+# Configure replicas
+- hosts: ipareplicas
+  tasks:
+  - name: Configure replica servers
+    include_role:
+      name: ipa_relica
 ...
