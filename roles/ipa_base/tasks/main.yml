@@ -8,4 +8,6 @@
   import_tasks: disk.yml
 - name: Create files to run FreeIPA
   import_tasks: run_files.yml
+- name: Create the container for FreeIPA
+  import_tasks: container.yml
 ...
