@@ -18,5 +18,5 @@
   tasks:
   - name: Configure replica servers
     include_role:
-      name: ipa_relica
+      name: ipa_replica
 ...
