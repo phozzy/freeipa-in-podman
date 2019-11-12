@@ -1,0 +1,6 @@
+---
+- name: Copy the file with installation options
+  template:
+    src: ipa-server-install-options.j2
+    dest: /var/lib/ipadata/ipa-server-install-options
+...

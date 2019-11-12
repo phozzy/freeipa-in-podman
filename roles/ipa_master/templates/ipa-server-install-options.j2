@@ -1,11 +1,12 @@
 --realm={{ realm }}
 --allow-zone-overlap
---ds-password=
---admin-password=
+--ds-password={{ ds_password }}
+--admin-password={{ admin_password }}
 {% for forwarder in forwarders %}
 --forwarder={{ forwarder }}
 {% endfor %}
 --auto-reverse
 --setup-dns
 --unattended
---hostname={{ container_hostname }}.{{ domain }}
+--domain={{ domain }}
+--setup-kra
