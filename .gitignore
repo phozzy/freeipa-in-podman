@@ -5,3 +5,4 @@
 .terraform
 inventory.yml
 vars.sh
+var*.yml
