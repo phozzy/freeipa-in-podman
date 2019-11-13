@@ -1,11 +1,23 @@
 --realm={{ realm }}
+{% if allow_zone_overlap %}
+--allow-zone-overlap
+{% endif %}
 --ds-password={{ ds_password }}
 --admin-password={{ admin_password }}
 {% for forwarder in forwarders %}
 --forwarder={{ forwarder }}
 {% endfor %}
+{% if auto_reverse %}
 --auto-reverse
+{% endif %}
+{% if setup_dns %}
 --setup-dns
+{% endif %}
 --unattended
 --domain={{ domain }}
+{% if setup_kra %}
 --setup-kra
+{% endif %}
+{% if setup_ca %}
+--setup-ca
+{% endif %}

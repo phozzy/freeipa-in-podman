@@ -26,7 +26,7 @@ ipa:
       address: ${fip.ip_address}
 %{ endfor ~}
     realm: ${upper(domain)}
-    allow_zone_overlap: yes
+    allow_zone_overlap: no
     forwarders:
 %{ for forwarder in forwarders ~}
     - ${forwarder}
