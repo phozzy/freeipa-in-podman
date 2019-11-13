@@ -1,0 +1,37 @@
+---
+- name: create empty fact with add_host and dns parameters
+  set_fact:
+    add_host: []
+    dns: []
+    podman_cmd:
+    - podman
+    - run
+    container_options:
+    - "--rm"
+    - "-it"
+    - "--hostname={{ container_hostname }}.{{ domain }}"
+    - "--dns-search={{ domain }}"
+    - "--name=freeipa-server-container"
+    - "--network=ns:/run/netns/ipans"
+    - "--read-only"
+    - "--volume=/var/lib/ipadata:/data:Z"
+    image_name:
+    - "{{ image }}"
+    container_cmd:
+    - cat
+    - /etc/hosts
+- name: add items to add_host list
+  set_fact:
+    add_host: "{{ add_host + [ [ '--add-host=', item.host, '.' , domain, ':' , item.address ] | join('') ] }}"
+  loop: "{{ fips }}"
+- name: add items to dns list
+  set_fact:
+    dns: "{{ dns + [ [ '--dns=', item ] | join('') ] }}"
+  loop: "{{ forwarders }}"
+- name: Run a command
+  command:
+    argv: "{{ podman_cmd + container_options + add_host + dns + image_name + container_cmd }}"
+  register: result
+- debug:
+    var: result
+...

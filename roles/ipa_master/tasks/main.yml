@@ -2,3 +2,5 @@
 # tasks file for ipa_master
 - name: Copy the file with options for master installation
   import_tasks: config.yml
+- name: run a command
+  import_tasks: install.yml
