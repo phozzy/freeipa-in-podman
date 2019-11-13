@@ -37,4 +37,5 @@ ipa:
     setup_kra: yes
     setup_dns: yes
     setup_ca: yes
+    image: docker.io/freeipa/freeipa-server
 ...

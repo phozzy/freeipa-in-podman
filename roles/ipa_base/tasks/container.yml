@@ -1,7 +1,7 @@
 ---
 - name: Pull FreeIPA container image
   podman_image:
-    name: docker.io/freeipa/freeipa-server
+    name: "{{ image }}"
     state: present
 - name: Create a network namespace for FreeIPA container
   command: /usr/local/sbin/ipa_net.py
