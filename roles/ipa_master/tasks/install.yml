@@ -7,14 +7,15 @@
     - podman
     - run
     container_options:
-    - "--rm"
     - "-it"
     - "--hostname={{ container_hostname }}.{{ domain }}"
     - "--dns-search={{ domain }}"
     - "--name=freeipa-server-container"
     - "--network=ns:/run/netns/ipans"
-    - "--read-only"
     - "--volume=/var/lib/ipadata:/data:Z"
+    - "--volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    - "--tmpfs=/run"
+    - "--tmpfs=/tmp"
     image_name:
     - "{{ image }}"
     container_cmd:
