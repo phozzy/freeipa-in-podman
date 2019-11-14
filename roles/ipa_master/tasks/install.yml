@@ -18,8 +18,7 @@
     image_name:
     - "{{ image }}"
     container_cmd:
-    - cat
-    - /etc/hosts
+    - exit-on-finished
 - name: add items to add_host list
   set_fact:
     add_host: "{{ add_host + [ [ '--add-host=', item.host, '.' , domain, ':' , item.address ] | join('') ] }}"
