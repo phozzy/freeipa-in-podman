@@ -6,6 +6,7 @@
   - epel-release
   - python3-pyroute2
   - podman
+  - podman-docker
 - name: Set container_manage_cgroup selinux bolean
   seboolean:
     name: container_manage_cgroup
