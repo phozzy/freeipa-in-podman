@@ -48,3 +48,9 @@ You can do it by:
     admin_password: "some_secret_password"
     ...
     ```
+
+The example of ansible command:
+```bash
+ansible-playbook -i inventory.yml --extra-vars "@varsafe.yml" --ask-vault-pass -vvv main.yml
+```
+
