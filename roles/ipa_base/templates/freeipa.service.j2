@@ -5,16 +5,27 @@ Wants=network-online.target
 [Service]
 Restart=on-abnormal
 ExecStartPre=/usr/local/sbin/ipa_net.py
-ExecStartPre=-/usr/bin/podman kill freeipa
-ExecStartPre=-/usr/bin/podman rm -f freeipa
-ExecStartPre=-/usr/bin/podman pull registry.hub.docker.com/freeipa/freeipa-server
-ExecStart=/usr/bin/podman run --name freeipa \
-                              --hostname {{ container_hostname }}.{{ domain }} \
+ExecStartPre=-/usr/bin/podman kill freeipa-server-container
+ExecStartPre=-/usr/bin/podman rm --force freeipa-server-container
+ExecStartPre=-/usr/bin/podman pull {{ image }}
+ExecStart=/usr/bin/podman run --rm \
+                              --interactive \
+                              --tty \
+                              --systemd=true \
+                              --hostname={{ container_hostname }}.{{ domain }} \
+                              --dns-search={{ domain }} \
+                              --name=freeipa-server-container \
+                              --network=ns:/run/netns/ipans \
+                              --volume=/var/lib/ipadata:/data:Z \
+                              --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro \
+                              --volume=/dev/urandom:/dev/random:ro \
+                              --tmpfs=/run \
+                              --tmpfs=/tmp \
+                              --dns=127.0.0.1 \
 {% for fip in fips %}
-                              --add-host {{ fip.host }}.{{ domain }}:{{ fip.address }} \
+                              --add-host={{ fip.host }}.{{ domain }}:{{ fip.address }} \
 {% endfor %}
-                              --net=ns:/var/run/netns/ipans \
-                              registry.hub.docker.com/freeipa/freeipa-server echo "hi"
-ExecStop=/usr/bin/podman stop freeipa
+                              {{ image }}
+ExecStop=/usr/bin/podman stop freeipa-server-container
 [Install]
 WantedBy=multi-user.target
