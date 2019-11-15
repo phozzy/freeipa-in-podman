@@ -2,5 +2,5 @@
 # tasks file for ipa_master
 - name: Copy the file with options for master installation
   import_tasks: config.yml
-- name: run a command
+- name: Install FreeIPA master server
   import_tasks: install.yml
