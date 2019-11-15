@@ -7,7 +7,9 @@
     - podman
     - run
     container_options:
-    - "-it"
+    - "--rm"
+    - "--interactive"
+    - "--tty"
     - "--hostname={{ container_hostname }}.{{ domain }}"
     - "--dns-search={{ domain }}"
     - "--name=freeipa-server-container"
@@ -20,6 +22,7 @@
     - "{{ image }}"
     container_cmd:
     - exit-on-finished
+    - ipa-server-install
 - name: add items to add_host list
   set_fact:
     add_host: "{{ add_host + [ [ '--add-host=', item.host, '.' , domain, ':' , item.address ] | join('') ] }}"
@@ -31,7 +34,5 @@
 - name: Run a command
   command:
     argv: "{{ podman_cmd + container_options + add_host + dns + image_name + container_cmd }}"
-  register: result
-- debug:
-    var: result
+    creates: /var/lib/ipadata/build-id
 ...
