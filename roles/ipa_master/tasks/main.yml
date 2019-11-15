@@ -4,3 +4,6 @@
   import_tasks: config.yml
 - name: Install FreeIPA master server
   import_tasks: install.yml
+- name: Lunch FreeIPA master server
+  import_tasks: run.yml
+...
