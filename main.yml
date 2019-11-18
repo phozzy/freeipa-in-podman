@@ -20,4 +20,10 @@
   - name: Configure replica servers
     include_role:
       name: ipa_replica
+# Disable DNS recursive requests to disable DNS ddos amplification
+- hosts: ipa
+  serial: 1
+  tasks:
+  - name: Change Bind config and restart FreeIPA
+    include: norecursive.yml
 ...
