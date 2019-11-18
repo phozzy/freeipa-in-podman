@@ -15,6 +15,7 @@
 
 # Configure replicas
 - hosts: ipareplicas
+  serial: 1
   tasks:
   - name: Configure replica servers
     include_role:
