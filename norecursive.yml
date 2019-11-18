@@ -1,0 +1,33 @@
+---
+- name: Allow recursion for acl
+  lineinfile:
+    path: /var/lib/ipadata/etc/named.conf
+    backrefs: yes
+    firstmatch: yes
+    line: '\1allow-recursion { localhost; };'
+    regexp: '^(.*)allow-recursion { any; };'
+    state: present
+  register: allow_acl
+- name: Make restrictions for Bind server
+  blockinfile:
+    path: /var/lib/ipadata/etc/named.conf
+    insertafter: '^(.*)allow-recursion { localhost; };'
+    block: |
+      /* 8-> */
+              allow-query { any; };
+              allow-query-cache { localhost; };
+              allow-transfer { none; };
+              rate-limit {
+                  responses-per-second 5;
+                  window 5;
+              };
+      /* 8<- */
+    marker: "/* {mark} Put Bind constraints */"
+    state: present
+  register: bind_constrain
+- name: Restart FreeIPA if Bind configuration has changed
+  systemd:
+    name: freeipa.service
+    state: restarted
+  when: allow_acl.changed or bind_constrain.changed
+...
