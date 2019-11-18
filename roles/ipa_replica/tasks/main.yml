@@ -1,2 +1,9 @@
 ---
 # tasks file for ipa_replica
+- name: Copy the file with options for replica installation
+  import_tasks: config.yml
+- name: Install FreeIPA replica server
+  import_tasks: install.yml
+- name: Lunch FreeIPA replica server
+  import_tasks: run.yml
+...

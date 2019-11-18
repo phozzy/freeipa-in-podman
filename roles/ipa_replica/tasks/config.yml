@@ -1,0 +1,6 @@
+---
+- name: Copy the file with replica installation options
+  template:
+    src: ipa-replica-install-options.j2
+    dest: /var/lib/ipadata/ipa-replica-install-options
+...

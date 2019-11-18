@@ -1,0 +1,24 @@
+--principal=admin
+--admin-password={{ admin_password }}
+--server={{ fips[0].host }}.{{ domain }}
+--domain={{ domain }}
+--realm={{ realm }}
+{% if setup_dns %}
+--setup-dns
+{% endif %}
+{% if allow_zone_overlap %}
+--allow-zone-overlap
+{% endif %}
+{% if auto_reverse %}
+--auto-reverse
+{% endif %}
+{% for forwarder in forwarders %}
+--forwarder={{ forwarder }}
+{% endfor %}
+{% if setup_ca %}
+--setup-ca
+{% endif %}
+{% if setup_kra %}
+--setup-kra
+{% endif %}
+--unattended
