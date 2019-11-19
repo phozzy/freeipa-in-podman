@@ -71,11 +71,11 @@ provider "hcloud" {
 # Get data from Hetzner Cloud
 data "hcloud_floating_ip" "fip" {
   for_each = var.server
-  with_selector = "host==${each.key}"
+  with_selector = "host==${each.key},object=freeipa"
 }
 data "hcloud_volume" "vol" {
   for_each = var.server
-  with_selector = "host==${each.key}"
+  with_selector = "host==${each.key},object=freeipa"
 }
 
 # Create resources
