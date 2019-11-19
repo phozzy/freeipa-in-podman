@@ -1,0 +1,6 @@
+---
+- name: Clean sensitive data
+  file:
+    path: /var/lib/ipadata/ipa-server-install-options
+    state: absent
+...
