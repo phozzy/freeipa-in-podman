@@ -1,0 +1,6 @@
+---
+- name: Clean sensitive data
+  file:
+    path: /var/lib/ipadata/ipa-replica-install-options
+    state: absent
+...
