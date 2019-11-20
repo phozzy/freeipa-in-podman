@@ -3,13 +3,7 @@
 # Define terraform backend
 terraform {
   required_version = "~> 0.12.0"
-  backend "remote" {
-    hostname = "app.terraform.io"
-    organization = "TheHyve"
-    workspaces {
-      name = "ipacont8"
-    }
-  }
+  backend "remote" {}
 }
 
 # Definition of variables

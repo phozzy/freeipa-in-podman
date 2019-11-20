@@ -28,6 +28,11 @@ After servers are provisioned [Ansible](https://www.ansible.com/) is used for th
 
 ### Local configuration
 
+Run the following command for terraform initialisation:
+```bash
+terraform init -backend-config=backend.hcl
+```
+
 Required tools
 --------------
 
