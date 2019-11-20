@@ -6,3 +6,4 @@
 inventory.yml
 vars.sh
 var*.yml
+backend.hcl
