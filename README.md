@@ -3,16 +3,16 @@
 ## Description
 
 The goal of this project is to provide a way for deploying IDM system in a cloud.
-The deployment should be easy, reliable, reproducabel and idempotent.
+The deployment should be easy, reliable, reproducible and idempotent.
 It should be possible to use this deployment for disaster recovery.
 
 ## Used tools
 
-We use [FreeIPA](https://www.freeipa.org/page/Main_Page "The Open Source Identity Management Solution") as our IDM soulution.
+We use [FreeIPA](https://www.freeipa.org/page/Main_Page "The Open Source Identity Management Solution") as our IDM solution.
 
 This project deploys the IDM to the [Hetzner Cloud](https://www.hetzner.com/cloud), but it should be possible to use this project as inspiration for the development of a project deploying the IDM to another cloud.
 
-We provision our servers using [Terraform](https://www.terraform.io/), and if it was decided to go with another cloud, it is possible to use an orchestration tool from that cloud such as [AWS CloudFormation](https://aws.amazon.com/cloudformation/) or [Openstack Heat](https://wiki.openstack.org/wiki/Heat) or any other prefered one.
+We provision our servers using [Terraform](https://www.terraform.io/), and if it was decided to go with another cloud, it is possible to use an orchestration tool from that cloud such as [AWS CloudFormation](https://aws.amazon.com/cloudformation/) or [Openstack Heat](https://wiki.openstack.org/wiki/Heat) or any other preferred one.
 
 FreeIPA server runs inside a container. We use [Podman](https://podman.io/) as a container engine. Podman is a daemonless container engine for developing, managing, and running OCI Containers on your Linux System.
 
@@ -26,12 +26,62 @@ After servers are provisioned [Ansible](https://www.ansible.com/) is used for th
 
 ### External dependencies
 
+#### Terraform configuration
+
+This project uses Terraform for infrastructure provisioning and uses Terraform remote backend for keeping the state of infrastructure for collaborative work.
+
+To be able to use the remote backend we need to register (or have already registered) __*organizaton_name*__ organization at [Terraform Cloud](https://app.terraform.io/). Also we need to create __*workspace_name*__ workspace for this deployment. This workspace should have __Local__ Execution mode in its settings, so it will be used only to store the state of our deployment. This requierements comes from the fact that there is a __local-exec__ provisioner in the projects Terraform code, that generates Ansible inventory file to be used in the next step.
+
+#### Hetzner cloud configuration
+
+It is assumed that there is an account Hetzner, so we are allowable to create new entities in Hetzner Cloud. We should create a project that will include infrastructure for this project.
+
 ### Local configuration
+
+#### Terraform
+
+##### Terraform CLI installation
+
+Use this [manual](https://learn.hashicorp.com/terraform/getting-started/install.html) to install Terraform CLI tool.
+
+##### Terraform access configuration
+
+In order to be able to access Terraform Cloud from Terraform CLI we need generate an access token in "User settings" at Terraform Cloud, and put it into the `~/.terraformrc` file:
+```
+credentials "app.terraform.io" {
+  token = "xxxxxx.atlasv1.zzzzzzzzzzzzz"
+}
+```
+
+##### Terraform backend initialisation:
+
+In order to initialise Terraform backend there shoud be created `backend.hcl` file in the root directory of this project with the following content:
+```
+# backend.hcl
+hostname = "app.terraform.io"
+organization = "<organizaton_name>"
+workspaces { name = "<workspace_name>" }
+```
+Replace words in `< >` with your __*organizaton_name*__ and __*workspace_name*__.
+
+Although this file containes no sensitive information it is included into `.gitignore` file.
 
 Run the following command for terraform initialisation:
 ```bash
 terraform init -backend-config=backend.hcl
 ```
+
+#### Hetzner
+
+##### Hetzner CLI installation
+
+Use this [manual](https://community.hetzner.com/tutorials/howto-hcloud-cli) for CLI installation and configuration.
+
+#### Ansible
+
+##### Ansible installation
+
+Use this [manual](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) for Ansible installation.
 
 Required tools
 --------------
