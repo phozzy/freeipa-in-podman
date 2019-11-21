@@ -83,6 +83,23 @@ Use this [manual](https://community.hetzner.com/tutorials/howto-hcloud-cli) for 
 
 Use this [manual](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) for Ansible installation.
 
+## Deployment
+
+### Configuration
+
+It is important to be sure that we went through all previous step and have `backend.hcl` file created and Terraform initialisated.
+
+We need to define values for some variables:
+* `hcloud_token` - required;
+* `hetzner_dns` - optional, a list with ip-addresses of DNS. The default list defined in the code;
+* `server` - optional, a mapping of server names to servers locations (data centers). The default mapping defined in the code. Be aware this mapping should be relevant for labels of volumes and floating ip addresses;
+* `server_type` - optional, the default value defined in the code. Check Hetzner for all possible values;
+* `ssh_key` - required. An ID of your public key previously uploaded to Hetzner cloud;
+* `ssh_key_private` - required. A string with a path to the private ssh-key;
+* `remote_user` - optional. The default user for OS images in Hetzner cloud is `root`;
+* `server_image` - optional. A name of OS image, the default value defined in the code;
+* `domain` - required. A name for domain zone that will be managed by IDM system;
+
 Required tools
 --------------
 
