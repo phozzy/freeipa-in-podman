@@ -209,7 +209,7 @@ There are several way to do that:
 * Create `terraform.auto.tfvars` file containning variable in Terraform format:
    ```
    server_type = "..."
-   ssh_key_private = "/Users/username/.ssh/id_ed25519"
+   ssh_key_private = "/home/username/.ssh/id_ed25519"
    remote_user = "..."
    server_image = "..."
    ssh_key = "..."
@@ -221,54 +221,46 @@ Both of these files are mentioned in `.gitignore` file.
 
 ### Resource provisioning
 
-Required tools
---------------
+After we are done with previous steps, we can:
 
-* Terraform
+1. Verify Terraform code with the following command:
+   ```bash
+   terraform validate
+   ```
+2. Run the following command to provision servers:
+   ```bash
+   terraform run
+   ```
 
-* Ansible
+### Configuring and running FreeIPA services
 
-Involved projects
------------------
+At the last step Terraform will create (update) `inventory.yml` file from `inventory.template`.
+This file defines values for all needed variables except 2 most important ones:
+* a password for `admin` user;
+* a password for `directory manager` user.
 
-* FreeIPA - server is installed as a container.
+These 2 password shoud be kept in secret.
 
-* Podman - a runtime for container.
+There several way to pass these values to our ansible playbook:
+* passing them as `--extra-vars` parameter to `ansible-playbook` command, if we are sure that our CLI history is a safe place;
 
-* pyroute2 - we run a python script before we start FreeIPA service, so we are sure that our network is configured properly.
+* creating a file with variables, protected by `ansible-vault` with following command:
+   ```bash
+   ansible-vault edit varsafe.yml
+   ```
+   with a following content:
+   ```yaml
+   ---
+   ds_password: "some_secret_password"
+   admin_password: "some_secret_password"
+   ...
+   ```
 
-Operating system
-----------------
-
-CentOS 8 (or compatipable) - this project uses ipvlan with network namespacing.
-Be sure that your kernel supports this.
-
-How-to deploy
--------------
-
-Define all terraform variables by declaring environment variables or by definning them down in `*.auto.tfvars` file.
-
-Run:
-```
-terraform apply
-```
-The last resource uses `local-exec` to create an inventory file for Ansible playbook.
-This inventory will be needed to run the playbook to deploy FreeIPA cluster.
-You also need to pass DS manager password and Admin password to this playbook.
-You can do it by:
-
-* passing them as `--extra-vars` parameter to `ansible-playbook` command, if you are sure that your CLI history is a safe place;
-
-* creating a file with variables, protected by `ansible-vault`.
-    ```yaml
-    ---
-    ds_password: "some_secret_password"
-    admin_password: "some_secret_password"
-    ...
-    ```
-
-The example of ansible command:
+Here is an example of ansible command that we can use for configuring and running FreeIPA services:
 ```bash
-ansible-playbook -i inventory.yml --extra-vars "@varsafe.yml" --ask-vault-pass -vvv main.yml
+ansible-playbook -i inventory.yml --extra-vars "@varsafe.yml" --ask-vault-pass main.yml
 ```
 
+It may take 20-30 minutes to finish this playbook. After that we may check availability of FreeIPA's web user interface.
+
+That is it! Feedback is wellcome!
