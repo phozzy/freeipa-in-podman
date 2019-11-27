@@ -131,9 +131,9 @@ These static ip-address and network namespace won't be shared with a host VM.
 
 1. Create Floating IP using `hcloud` utility (*example*):
    ```bash
-   hcloud floating-ip create --description dc00 --home-location nbg1 --type ipv4
-   hcloud floating-ip create --description dc01 --home-location fsn1 --type ipv4
-   hcloud floating-ip create --description dc10 --home-location hel1 --type ipv4
+   hcloud floating-ip create --description dc00ipv4 --home-location nbg1 --type ipv4
+   hcloud floating-ip create --description dc01ipv4 --home-location fsn1 --type ipv4
+   hcloud floating-ip create --description dc10ipv4 --home-location hel1 --type ipv4
    ```
 
 2. Configure a domain delegation for your domain (subdomain) using created ip-addresses.
@@ -146,7 +146,7 @@ These static ip-address and network namespace won't be shared with a host VM.
 
 4. Add labels to Floating IP addresses (*example*):
    ```bash
-   hcloud floating-ip add-label FLOATING_IP_ID object=freeipa
+   hcloud floating-ip add-label FLOATING_IP_ID object=freeipa4
    hcloud floating-ip add-label FLOATING_IP_ID server=dc00
    hcloud floating-ip add-label FLOATING_IP_ID location=nbg1
    hcloud floating-ip add-label FLOATING_IP_ID host=etc00
