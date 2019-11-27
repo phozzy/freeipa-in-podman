@@ -19,6 +19,8 @@ We use [Podman](https://podman.io/) as a container engine.
 Podman is a daemonless container engine for developing, managing, and running OCI Containers on your Linux System.
 
 We use [CentOS](https://centos.org/) 8 Linux distribution as a base operating system, but it should be possible to use any distribution that is able to run Podman, uses systemd, and if its kernel has the support for IPvlans and network namespaces.
+But the current implementaion containes some steps that are specific for CentOS 8.
+If it is decided to go with other Linux distribution, those steps should be modified.
 
 [Pyroute2](https://pypi.org/project/pyroute2/ "Python netlink library") is used to create an ipvlan and network namespace for containers network.
 
