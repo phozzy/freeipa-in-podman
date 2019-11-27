@@ -5,4 +5,10 @@
     daemon_reload: yes
     enabled: yes
     state: started
+- name: Wait for FreeIPA to be started
+  wait_for:
+    host: "{{ container_hostname }}.{{ domain }}"
+    port: 443
+    state: started
+    timeout: 600
 ...

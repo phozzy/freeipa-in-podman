@@ -23,10 +23,10 @@
     container_cmd:
     - exit-on-finished
     - ipa-replica-install
-- name: add items to add_host list
+- name: add ipv4 items to add_host list
   set_fact:
     add_host: "{{ add_host + [ [ '--add-host=', item.host, '.' , domain, ':' , item.address ] | join('') ] }}"
-  loop: "{{ fips }}"
+  loop: "{{ fips4 }}"
 - name: add items to dns list
   set_fact:
     dns: "{{ dns + [ [ '--dns=', item ] | join('') ] }}"

@@ -3,10 +3,10 @@ ipa:
   hosts:
 %{ for host in hosts ~}
     ${host.name}.${domain}:
-      ansible_host: ${host.ipv4_address}
+      ansible_host: "${host.ipv4_address}"
       vol_id: ${volumes[host.name].id}
-      floating_ip: ${fips[host.name].ip_address}
-      container_hostname: ${fips[host.name].description}
+      floating_ipv4: "${fips4[host.name].ip_address}"
+      container_hostname: ${fips4[host.name].labels.server}
 %{ endfor ~}
   children:
     ipamaster:
@@ -20,16 +20,16 @@ ipa:
   vars:
     ansible_user: ${user}
     ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
-    fips:
-%{ for fip in fips ~}
-    - host: ${fip.description}
-      address: ${fip.ip_address}
+    fips4:
+%{ for fip4 in fips4 ~}
+    - host: ${fip4.labels.server}
+      address: "${fip4.ip_address}"
 %{ endfor ~}
     realm: ${upper(domain)}
     allow_zone_overlap: yes
     forwarders:
 %{ for forwarder in forwarders ~}
-    - ${forwarder}
+    - "${forwarder}"
 %{ endfor ~}
     auto_reverse: yes
     unattended: yes

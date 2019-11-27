@@ -22,8 +22,9 @@ ExecStart=/usr/bin/podman run --rm \
                               --tmpfs=/run \
                               --tmpfs=/tmp \
                               --dns=127.0.0.1 \
-{% for fip in fips %}
-                              --add-host={{ fip.host }}.{{ domain }}:{{ fip.address }} \
+                              --dns=::1 \
+{% for fip4 in fips4 %}
+                              --add-host={{ fip4.host }}.{{ domain }}:{{ fip4.address }} \
 {% endfor %}
                               {{ image }}
 ExecStop=/usr/bin/podman stop freeipa-server-container
