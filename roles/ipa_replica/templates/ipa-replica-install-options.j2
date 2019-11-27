@@ -1,6 +1,6 @@
 --principal=admin
 --admin-password={{ admin_password }}
---server={{ fips[0].host }}.{{ domain }}
+--server={{ fips4[0].host }}.{{ domain }}
 --domain={{ domain }}
 --realm={{ realm }}
 {% if setup_dns %}
@@ -12,9 +12,7 @@
 {% if auto_reverse %}
 --auto-reverse
 {% endif %}
-{% for forwarder in forwarders %}
---forwarder={{ forwarder }}
-{% endfor %}
+--no-forwarders
 {% if setup_ca %}
 --setup-ca
 {% endif %}

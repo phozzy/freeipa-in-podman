@@ -4,9 +4,7 @@
 {% endif %}
 --ds-password={{ ds_password }}
 --admin-password={{ admin_password }}
-{% for forwarder in forwarders %}
---forwarder={{ forwarder }}
-{% endfor %}
+--no-forwarders
 {% if auto_reverse %}
 --auto-reverse
 {% endif %}

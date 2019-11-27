@@ -5,33 +5,32 @@ from pyroute2 import IPRoute
 ph_interface = "eth0"
 container_name_space = "ipans"
 container_link = "ipalink"
-floating_ip = "{{ floating_ip }}"
+floating_ipv4 = "{{ floating_ipv4 }}"
 hetzner_gw = "172.31.1.1"
 ipr = IPRoute()
 base_link = ipr.link_lookup(ifname=ph_interface)[0]
-netns = NetNS(container_name_space)
-with suppress(Exception):
-    ipr.link("add", ifname=container_link, kind="ipvlan", link=base_link, ipvlan_mode=0)
-with suppress(Exception):
-    ipvl_link = ipr.link_lookup(ifname=container_link)[0]
-with suppress(Exception):
-    ipr.link("set", index=ipvl_link, net_ns_fd=container_name_space)
-with suppress(Exception):
-    ipvl_link = netns.link_lookup(ifname=container_link)[0]
-with suppress(Exception):
-    netns.addr("add", index=ipvl_link, address=floating_ip, mask=32)
-with suppress(Exception):
-    netns.link("set", index=ipvl_link, state="up")
-with suppress(Exception):
-    netns.route("add", dst=hetzner_gw, mask=32, oif=ipvl_link, scope="link")
-with suppress(Exception):
-    netns.route("add", dst="0.0.0.0/0", gateway=hetzner_gw, oif=ipvl_link)
-with suppress(Exception):
-    vl_loopbk = netns.link_lookup(ifname="lo")[0]
-with suppress(Exception):
-    netns.addr("add", index=vl_loopbk, address="127.0.0.1", mask=8, scope=254)
-with suppress(Exception):
-    netns.addr("add", index=vl_loopbk, address="::1", mask=128, scope=254)
-with suppress(Exception):
-    netns.link("set", index=vl_loopbk, state="up")
-netns.close()
+with NetNS(container_name_space) as netns:
+    with suppress(Exception):
+        ipr.link("add", ifname=container_link, kind="ipvlan", link=base_link, ipvlan_mode=0)
+    with suppress(Exception):
+        ipvl_link = ipr.link_lookup(ifname=container_link)[0]
+    with suppress(Exception):
+        ipr.link("set", index=ipvl_link, net_ns_fd=container_name_space)
+    with suppress(Exception):
+        ipvl_link = netns.link_lookup(ifname=container_link)[0]
+    with suppress(Exception):
+        netns.addr("add", index=ipvl_link, address=floating_ipv4, mask=32)
+    with suppress(Exception):
+        netns.link("set", index=ipvl_link, state="up")
+    with suppress(Exception):
+        netns.route("add", dst=hetzner_gw, mask=32, oif=ipvl_link, scope="link")
+    with suppress(Exception):
+        netns.route("add", dst="0.0.0.0/0", gateway=hetzner_gw, oif=ipvl_link)
+    with suppress(Exception):
+        vl_loopbk = netns.link_lookup(ifname="lo")[0]
+    with suppress(Exception):
+        netns.addr("add", index=vl_loopbk, address="127.0.0.1", mask=8, scope=254)
+    with suppress(Exception):
+        netns.addr("add", index=vl_loopbk, address="::1", mask=128, scope=254)
+    with suppress(Exception):
+        netns.link("set", index=vl_loopbk, state="up")

@@ -63,9 +63,9 @@ provider "hcloud" {
 }
 
 # Get data from Hetzner Cloud
-data "hcloud_floating_ip" "fip" {
+data "hcloud_floating_ip" "fip4" {
   for_each = var.server
-  with_selector = "host==${each.key},object=freeipa"
+  with_selector = "host==${each.key},object=freeipa4"
 }
 data "hcloud_volume" "vol" {
   for_each = var.server
@@ -98,9 +98,9 @@ resource "hcloud_server" "host" {
 }
 
 # Assign floating IP
-resource "hcloud_floating_ip_assignment" "fip_ass" {
+resource "hcloud_floating_ip_assignment" "fip4_ass" {
   for_each = var.server
-  floating_ip_id = "${data.hcloud_floating_ip.fip[each.key].id}"
+  floating_ip_id = "${data.hcloud_floating_ip.fip4[each.key].id}"
   server_id = "${hcloud_server.host[each.key].id}"
 }
 # Attach volume
@@ -112,12 +112,14 @@ resource "hcloud_volume_attachment" "vol_att" {
 
 # Create an inventory file from template
 resource "null_resource" "inventory" {
-  depends_on = [ hcloud_floating_ip_assignment.fip_ass ]
+  depends_on = [
+    hcloud_floating_ip_assignment.fip4_ass,
+  ]
   # Changes to any instance of the cluster requires re-provisioning
   triggers = {
     cluster_instance_ids = "${join(",", [ for k, v in var.server: hcloud_server.host[k].id ])}"
   }
   provisioner "local-exec" {
-    command = "echo '${templatefile("inventory.template", { hosts = "${hcloud_server.host}", fips = "${data.hcloud_floating_ip.fip}", volumes = "${data.hcloud_volume.vol}", domain = "${var.domain}", user = "${var.remote_user}", forwarders = "${var.hetzner_dns}" })}' > inventory.yml"
+    command = "echo '${templatefile("inventory.template", { hosts = "${hcloud_server.host}", fips4 = "${data.hcloud_floating_ip.fip4}", volumes = "${data.hcloud_volume.vol}", domain = "${var.domain}", user = "${var.remote_user}", forwarders = "${var.hetzner_dns}" })}' > inventory.yml"
   }
 }
